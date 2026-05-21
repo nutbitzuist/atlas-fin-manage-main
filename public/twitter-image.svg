@@ -1,0 +1,67 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <rect width="1200" height="600" fill="url(#gradient)"/>
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Pattern Overlay -->
+  <rect width="1200" height="600" fill="url(#pattern)" opacity="0.1"/>
+  <defs>
+    <pattern id="pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="2" fill="white"/>
+    </pattern>
+  </defs>
+
+  <!-- Main Content -->
+  <g transform="translate(100, 140)">
+    <!-- Money Icon -->
+    <circle cx="80" cy="80" r="75" fill="white" opacity="0.95"/>
+    <path d="M92.5 40V52.5C104.854 52.5 115 62.646 115 75C115 87.354 104.854 97.5 92.5 97.5H72.5C66.9772 97.5 62.5 101.977 62.5 107.5C62.5 113.023 66.9772 117.5 72.5 117.5H92.5C104.854 117.5 115 127.646 115 140V152.5" stroke="#10B981" stroke-width="8" stroke-linecap="round"/>
+    <path d="M72.5 52.5C60.146 52.5 50 62.646 50 75C50 87.354 60.146 97.5 72.5 97.5" stroke="#10B981" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="80" cy="80" r="60" stroke="#10B981" stroke-width="6"/>
+    <path d="M80 25V37.5" stroke="#10B981" stroke-width="8" stroke-linecap="round"/>
+    <path d="M80 122.5V135" stroke="#10B981" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Title -->
+    <text x="200" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="bold" fill="white">
+      FinDash OS
+    </text>
+
+    <!-- Subtitle -->
+    <text x="200" y="120" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="white" opacity="0.95">
+      Personal Finance Management Dashboard
+    </text>
+  </g>
+
+  <!-- Feature Pills -->
+  <g transform="translate(100, 360)">
+    <rect x="0" y="0" width="220" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="110" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="white" text-anchor="middle" font-weight="500">
+      📊 Track Assets
+    </text>
+
+    <rect x="240" y="0" width="240" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="360" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="white" text-anchor="middle" font-weight="500">
+      💰 Manage Budgets
+    </text>
+
+    <rect x="500" y="0" width="260" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="630" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="white" text-anchor="middle" font-weight="500">
+      📈 Monitor Net Worth
+    </text>
+
+    <rect x="780" y="0" width="260" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="910" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="white" text-anchor="middle" font-weight="500">
+      🎯 Achieve Goals
+    </text>
+  </g>
+
+  <!-- Footer URL -->
+  <text x="100" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="white" opacity="0.8">
+    findash.app
+  </text>
+</svg>

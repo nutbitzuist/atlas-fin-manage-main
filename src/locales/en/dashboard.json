@@ -1,0 +1,91 @@
+{
+  "menu": {
+    "user": "User",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "settings": "Settings",
+    "theme": "Theme",
+    "signOut": "Sign Out"
+  },
+  "profile": {
+    "title": "Edit Profile",
+    "description": "Update your profile information below.",
+    "fullName": "Full Name",
+    "email": "Email",
+    "emailNote": "Email cannot be changed from here",
+    "updating": "Updating...",
+    "updateProfile": "Update Profile"
+  },
+  "password": {
+    "title": "Change Password",
+    "description": "Enter your new password below. It must be at least 6 characters long.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "changing": "Changing...",
+    "changePassword": "Change Password",
+    "enterNew": "Enter new password",
+    "confirmNew": "Confirm new password"
+  },
+  "errors": {
+    "passwordMismatch": "New passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters long",
+    "failedSignOut": "Failed to sign out",
+    "failedPasswordChange": "Failed to change password",
+    "fullNameRequired": "Full name is required",
+    "failedProfileUpdate": "Failed to update profile",
+    "noUser": "No user found"
+  },
+  "success": {
+    "passwordChanged": "Password changed successfully",
+    "profileUpdated": "Profile updated successfully"
+  },
+  "cashAccounts": "Cash Accounts",
+  "investments": "Investments",
+  "realEstate": "Real Estate",
+  "vehicles": "Vehicles",
+  "otherAssets": "Other Assets",
+  "creditCards": "Credit Cards",
+  "loans": "Loans",
+  "reportsAnalytics": "Reports & Analytics",
+  "page": {
+    "dashboard": "Dashboard",
+    "welcomeBack": "Welcome back! Here's your financial overview.",
+    "totalAssets": "Total Assets",
+    "totalLiabilities": "Total Liabilities",
+    "monthlyCashFlow": "Monthly Cash Flow",
+    "loading": "Loading..."
+  },
+  "widgets": {
+    "netWorth": "Net Worth",
+    "netWorthTrend": "Net Worth Trend",
+    "assetAllocation": "Asset Allocation",
+    "emergencyFund": "Emergency Fund",
+    "progress": "Progress",
+    "goalAchieved": "Goal achieved!",
+    "creditUtilization": "Credit Utilization",
+    "excellent": "Excellent",
+    "good": "Good",
+    "high": "High",
+    "used": "used",
+    "limit": "limit",
+    "upcomingBills": "Upcoming Bills",
+    "noUpcomingBills": "No upcoming bills",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "paid": "Paid",
+    "savingsGoals": "Savings Goals",
+    "noActiveGoals": "No active goals",
+    "of": "of",
+    "target": "Target",
+    "value": "Value"
+  },
+  "quickActions": {
+    "addExpense": "Add Expense",
+    "addIncome": "Add Income",
+    "addAccount": "Add Account",
+    "addBill": "Add Bill",
+    "addGoal": "Add Goal",
+    "addSavingsGoal": "Add Savings Goal",
+    "uploadCsv": "Upload CSV"
+  }
+}

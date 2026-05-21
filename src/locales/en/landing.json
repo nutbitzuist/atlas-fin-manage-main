@@ -1,0 +1,63 @@
+{
+  "hero": {
+    "titleStart": "Your Complete",
+    "titleHighlight": "Financial Operating System",
+    "subtitle": "Manage money, plan taxes, and build wealth - designed specifically for Thailand",
+    "description": "Track expenses, optimize tax deductions, monitor net worth, and achieve your financial goals. Everything you need in one powerful dashboard.",
+    "cta": "Start Free Trial",
+    "secondaryCta": "Watch Demo",
+    "security": "Bank-level security",
+    "trial": "14-day",
+    "trialText": "free trial",
+    "noCard": "No credit card required",
+    "financialOverview": "Financial Overview",
+    "thisMonth": "This month",
+    "netWorth": "Net Worth",
+    "investments": "Investments",
+    "income": "Income",
+    "expenses": "Expenses",
+    "savings": "Savings",
+    "thaiTaxOptimized": "Thai Tax Optimized"
+  },
+  "features": {
+    "title": "Everything You Need to Manage Your Finances",
+    "subtitle": "Powerful tools to help you make better financial decisions"
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Get started in minutes"
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that's right for you",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "getStarted": "Get Started",
+    "contactUs": "Contact Us"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know"
+  },
+  "finalCta": {
+    "title": "Ready to Take Control of Your Finances?",
+    "subtitle": "Join thousands of users who are already managing their money smarter.",
+    "cta": "Start Free Trial"
+  },
+  "footer": {
+    "copyright": "All rights reserved.",
+    "product": "Product",
+    "features": "Features",
+    "pricing": "Pricing",
+    "company": "Company",
+    "about": "About",
+    "blog": "Blog",
+    "careers": "Careers",
+    "support": "Support",
+    "help": "Help Center",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}

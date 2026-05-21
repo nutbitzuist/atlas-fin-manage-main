@@ -1,0 +1,53 @@
+{
+  "name": "FinDash OS - Personal Finance Dashboard",
+  "short_name": "FinDash OS",
+  "description": "Comprehensive personal finance dashboard for tracking assets, investments, liabilities, income, expenses, budgets, and financial goals.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10B981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "finance",
+    "productivity",
+    "business"
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your financial overview",
+      "url": "/dashboard",
+      "icons": []
+    },
+    {
+      "name": "Add Transaction",
+      "short_name": "Transaction",
+      "description": "Record a new transaction",
+      "url": "/transactions",
+      "icons": []
+    },
+    {
+      "name": "Net Worth",
+      "short_name": "Net Worth",
+      "description": "Track your net worth",
+      "url": "/net-worth",
+      "icons": []
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /dashboard
+Disallow: /daily-brief
+Disallow: /weekly-review
+Disallow: /streaks
+Disallow: /assets
+Disallow: /liabilities
+Disallow: /income
+Disallow: /expenses
+Disallow: /transactions
+Disallow: /budget
+Disallow: /cash-flow
+Disallow: /bills
+Disallow: /savings-goals
+Disallow: /insurance
+Disallow: /reports
+Disallow: /reports-analytics
+Disallow: /tax-planning
+Disallow: /net-worth
+Disallow: /financial-health
+Disallow: /financial-insights
+Disallow: /monthly-update
+Disallow: /settings
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+Sitemap: https://findash.app/sitemap.xml

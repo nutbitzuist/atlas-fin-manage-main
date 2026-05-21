@@ -1,0 +1,34 @@
+{
+  "investments": {
+    "title": "Investments",
+    "description": "Track all your investment portfolios",
+    "totalInvestments": "Total Investments",
+    "allTypes": "All investment types combined",
+    "mutualFunds": "Mutual Funds",
+    "stocks": "Stocks",
+    "bonds": "Bonds",
+    "mt4Mt5": "MT4/MT5",
+    "business": "Business",
+    "taxTracker": "Thai Tax Deduction Tracker (RMF + SSF + Thai ESG)",
+    "taxTrackerDesc": "Maximum ฿500,000 allowance",
+    "contributedIn": "Contributed in",
+    "remaining": "Remaining: ฿",
+    "noTaxDataInfo": "⚠️ No saved tax data found for",
+    "addContributionHint": "💡 Add \"This Year Contribution\" when editing funds to track tax deductions",
+    "addInvestment": "Add Investment"
+  },
+  "taxPlanning": {
+    "title": "Tax Planning",
+    "description": "Manage your tax deductions and optimize your tax liabilities.",
+    "personalDeductions": "Personal & Family Allowances",
+    "investmentDeductions": "Investment Tax Deductions",
+    "insuranceDeductions": "Insurance & Healthcare",
+    "loanDeductions": "Home Loan Interest",
+    "donations": "Charitable Donations",
+    "estimatedTax": "Estimated Tax Payable",
+    "taxableIncome": "Net Taxable Income",
+    "totalDeductions": "Total Deductions",
+    "calculateAuto": "Auto-calculate using active portfolio",
+    "saveTaxPlan": "Save snapshot for active year"
+  }
+}

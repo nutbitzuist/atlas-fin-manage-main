@@ -1,0 +1,324 @@
+================================================================================
+MT4/MT5 EXPERT ADVISOR - API CONFIGURATION FOR GEMINI
+================================================================================
+
+🚀 NEW SYSTEM: USER-SPECIFIC API KEYS
+
+Each user generates their own API key from the dashboard.
+DO NOT use a global API key anymore!
+
+================================================================================
+📋 API ENDPOINT (FOR GEMINI)
+================================================================================
+
+1️⃣ API URL (Final Endpoint):
+https://oazfwlgnlrealwpyvqbu.supabase.co/functions/v1/portfolio-update
+
+
+2️⃣ API Key Authentication:
+   - Users generate their OWN API keys from: Settings → Security → API Keys
+   - Key format: api_key_[32 hex characters]
+   - Example: api_key_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+   - ⚠️  Each user has their own unique key
+   - ⚠️  The EA must prompt the user to enter their API key
+
+
+================================================================================
+API REQUEST FORMAT
+================================================================================
+
+METHOD: POST
+URL: https://oazfwlgnlrealwpyvqbu.supabase.co/functions/v1/portfolio-update
+
+HEADERS:
+  Authorization: Bearer api_key_USER_GENERATED_KEY_HERE
+  Content-Type: application/json
+
+REQUEST BODY (JSON):
+{
+  "account_number": 123456,
+  "balance": 10200.50,
+  "equity": 10350.75,
+  "profit": 150.25,
+  "server_time": "2025-11-16 06:00:01"
+}
+
+REQUIRED FIELD:
+  - account_number (number) - MT4/MT5 account number
+
+OPTIONAL FIELDS:
+  - balance (number) - Current account balance
+  - equity (number) - Current account equity
+  - profit (number) - Current profit/loss
+  - server_time (string) - MT4/MT5 server time
+
+
+================================================================================
+EXPECTED SUCCESS RESPONSE
+================================================================================
+
+HTTP Status: 200 OK
+
+Response Body:
+{
+  "success": true,
+  "message": "Portfolio data updated successfully",
+  "account_number": 123456,
+  "updated_at": "2025-11-16T06:00:02Z"
+}
+
+
+================================================================================
+ERROR RESPONSES
+================================================================================
+
+401 Unauthorized (Invalid or Missing API Key):
+{
+  "error": "Unauthorized",
+  "message": "Invalid API key. Please check your credentials."
+}
+
+403 Forbidden (API Key Revoked):
+{
+  "error": "Forbidden",
+  "message": "This API key has been revoked. Please generate a new one."
+}
+
+400 Bad Request (Missing account_number):
+{
+  "error": "Bad Request",
+  "message": "Missing or invalid required field: account_number (must be a number)"
+}
+
+500 Internal Server Error:
+{
+  "error": "Internal server error",
+  "message": "An unexpected error occurred"
+}
+
+
+================================================================================
+IMPORTANT INSTRUCTIONS FOR GEMINI
+================================================================================
+
+1. 🔑 API KEY INPUT:
+   - The EA MUST have an input parameter for the user to enter their API key
+   - Example: string API_KEY = "api_key_paste_your_key_here";
+   - DO NOT hardcode any API key in the EA
+   - Inform users: "Get your API key from Settings → Security in FinDash OS"
+
+2. ⏱️  SENDING FREQUENCY:
+   - Send updates every 60 seconds (recommended)
+   - Use a timer to avoid excessive API calls
+
+3. 🔄 AUTO-UPSERT:
+   - The API will automatically:
+     ✓ Create new record if (user_id, account_number) doesn't exist
+     ✓ Update existing record if it already exists
+     ✓ Add timestamps automatically
+     ✓ Track when the API key was last used
+
+4. 🔒 MT4/MT5 CONFIGURATION:
+   - Users must enable WebRequest for the API URL
+   - Tools → Options → Expert Advisors
+   - Check "Allow WebRequest for listed URLs"
+   - Add: https://oazfwlgnlrealwpyvqbu.supabase.co
+
+5. 📊 DATA TO SEND:
+   - account_number: AccountInfoInteger(ACCOUNT_LOGIN)
+   - balance: AccountInfoDouble(ACCOUNT_BALANCE)
+   - equity: AccountInfoDouble(ACCOUNT_EQUITY)
+   - profit: AccountInfoDouble(ACCOUNT_PROFIT)
+   - server_time: TimeToString(TimeCurrent(), TIME_DATE|TIME_SECONDS)
+
+
+================================================================================
+MT4 CODE TEMPLATE FOR GEMINI
+================================================================================
+
+//+------------------------------------------------------------------+
+//| Expert Advisor Input Parameters                                  |
+//+------------------------------------------------------------------+
+input string API_KEY = "api_key_paste_your_key_here";  // Your FinDash OS API Key
+input int SendIntervalSeconds = 60;                     // Send data every N seconds
+
+//+------------------------------------------------------------------+
+//| Global Variables                                                  |
+//+------------------------------------------------------------------+
+string API_URL = "https://oazfwlgnlrealwpyvqbu.supabase.co/functions/v1/portfolio-update";
+datetime lastSendTime = 0;
+
+//+------------------------------------------------------------------+
+//| Expert Advisor Initialization                                     |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Validate API key format
+    if(StringLen(API_KEY) < 40 || StringFind(API_KEY, "api_key_") != 0) {
+        Alert("⚠️ Invalid API Key! Get your key from: Settings → Security in FinDash OS");
+        return INIT_FAILED;
+    }
+
+    Print("✓ FinDash OS Portfolio Sync EA initialized");
+    Print("✓ Account: ", AccountInfoInteger(ACCOUNT_LOGIN));
+    Print("✓ API Key: ", StringSubstr(API_KEY, 0, 15), "...");
+
+    return INIT_SUCCEEDED;
+}
+
+//+------------------------------------------------------------------+
+//| Expert Advisor Tick Function                                      |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Check if it's time to send data
+    datetime currentTime = TimeCurrent();
+
+    if(currentTime - lastSendTime >= SendIntervalSeconds) {
+        SendPortfolioData();
+        lastSendTime = currentTime;
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Send Portfolio Data to API                                        |
+//+------------------------------------------------------------------+
+void SendPortfolioData()
+{
+    // Build JSON request body
+    string json = "{";
+    json += "\"account_number\":" + IntegerToString(AccountInfoInteger(ACCOUNT_LOGIN)) + ",";
+    json += "\"balance\":" + DoubleToString(AccountInfoDouble(ACCOUNT_BALANCE), 2) + ",";
+    json += "\"equity\":" + DoubleToString(AccountInfoDouble(ACCOUNT_EQUITY), 2) + ",";
+    json += "\"profit\":" + DoubleToString(AccountInfoDouble(ACCOUNT_PROFIT), 2) + ",";
+    json += "\"server_time\":\"" + TimeToString(TimeCurrent(), TIME_DATE|TIME_SECONDS) + "\"";
+    json += "}";
+
+    // Build HTTP headers
+    string headers = "Authorization: Bearer " + API_KEY + "\r\n";
+    headers += "Content-Type: application/json\r\n";
+
+    // Convert JSON string to char array
+    char post[], result[];
+    StringToCharArray(json, post, 0, StringLen(json));
+
+    // Send HTTP POST request
+    int httpCode = WebRequest(
+        "POST",
+        API_URL,
+        headers,
+        5000,  // 5 second timeout
+        post,
+        result,
+        headers
+    );
+
+    // Handle response
+    if(httpCode == 200) {
+        Print("✓ Portfolio data sent successfully to FinDash OS");
+    } else if(httpCode == 401) {
+        Alert("⚠️ Unauthorized: Invalid API key. Check your key in Settings → Security");
+    } else if(httpCode == 403) {
+        Alert("⚠️ Forbidden: Your API key has been revoked. Generate a new one in Settings → Security");
+    } else if(httpCode == -1) {
+        Alert("⚠️ WebRequest failed! Make sure you added the URL to allowed URLs in Tools → Options → Expert Advisors");
+    } else {
+        Print("⚠️ Error sending data. HTTP code: ", httpCode);
+    }
+}
+
+//+------------------------------------------------------------------+
+
+
+================================================================================
+TESTING THE API (FOR DEVELOPERS)
+================================================================================
+
+Step 1: Get a test API key
+   - Login to FinDash OS
+   - Go to Settings → Security
+   - Click "Generate New Key"
+   - Copy the generated key
+
+Step 2: Test with cURL (replace YOUR_API_KEY):
+
+curl -X POST \
+  "https://oazfwlgnlrealwpyvqbu.supabase.co/functions/v1/portfolio-update" \
+  -H "Authorization: Bearer api_key_YOUR_ACTUAL_KEY_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_number": 123456,
+    "balance": 10200.50,
+    "equity": 10350.75,
+    "profit": 150.25,
+    "server_time": "2025-11-16 06:00:01"
+  }'
+
+Expected Response:
+{
+  "success": true,
+  "message": "Portfolio data updated successfully",
+  "account_number": 123456,
+  "updated_at": "2025-11-16T06:00:02Z"
+}
+
+
+================================================================================
+USER WORKFLOW (HOW USERS WILL USE THE EA)
+================================================================================
+
+1. User registers/logs into FinDash OS
+2. User goes to Settings → Security → API Keys
+3. User clicks "Generate New Key"
+4. User copies the generated key (⚠️  Only shown once!)
+5. User installs the EA in MT4/MT5
+6. User enters their API key in the EA input parameters
+7. User attaches EA to a chart
+8. EA sends portfolio data every 60 seconds
+9. User views real-time data in FinDash OS dashboard
+
+
+================================================================================
+SECURITY NOTES FOR EA DEVELOPMENT
+================================================================================
+
+✅ DO:
+   - Allow users to input their own API key
+   - Validate API key format (starts with "api_key_", minimum 40 chars)
+   - Show masked key in logs (e.g., "api_key_abc...xyz")
+   - Handle all HTTP error codes gracefully
+   - Show user-friendly error messages
+
+❌ DON'T:
+   - Hardcode any API key
+   - Log the full API key
+   - Store API key in global variables (use input parameters)
+   - Send data too frequently (respect the 60s interval)
+
+
+================================================================================
+CHECKLIST FOR GEMINI
+================================================================================
+
+☑  Understand: Each user has their own unique API key
+☑  EA must have an input parameter for the API key
+☑  Validate API key format on initialization
+☑  Send data every 60 seconds
+☑  Handle all error responses (401, 403, 400, 500)
+☑  Show user-friendly alerts for errors
+☑  Test with WebRequest enabled
+☑  Inform users to get their key from Settings → Security
+
+
+================================================================================
+FINAL NOTES
+================================================================================
+
+This is a MULTI-TENANT system:
+- Each user's API key is unique
+- Data is automatically isolated per user
+- Users can generate up to 10 API keys
+- Users can revoke/delete keys anytime
+- Dashboard shows "Last Used" timestamp for each key
+
+For support: https://github.com/your-repo/issues

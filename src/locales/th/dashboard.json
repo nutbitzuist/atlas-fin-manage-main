@@ -1,0 +1,91 @@
+{
+  "menu": {
+    "user": "ผู้ใช้",
+    "editProfile": "แก้ไขโปรไฟล์",
+    "changePassword": "เปลี่ยนรหัสผ่าน",
+    "settings": "การตั้งค่า",
+    "theme": "ธีม",
+    "signOut": "ออกจากระบบ"
+  },
+  "profile": {
+    "title": "แก้ไขโปรไฟล์",
+    "description": "อัปเดตข้อมูลโปรไฟล์ของคุณด้านล่าง",
+    "fullName": "ชื่อ-นามสกุล",
+    "email": "อีเมล",
+    "emailNote": "ไม่สามารถเปลี่ยนอีเมลได้จากที่นี่",
+    "updating": "กำลังอัปเดต...",
+    "updateProfile": "อัปเดตโปรไฟล์"
+  },
+  "password": {
+    "title": "เปลี่ยนรหัสผ่าน",
+    "description": "ป้อนรหัสผ่านใหม่ของคุณด้านล่าง ต้องมีอย่างน้อย 6 ตัวอักษร",
+    "newPassword": "รหัสผ่านใหม่",
+    "confirmPassword": "ยืนยันรหัสผ่านใหม่",
+    "changing": "กำลังเปลี่ยน...",
+    "changePassword": "เปลี่ยนรหัสผ่าน",
+    "enterNew": "ป้อนรหัสผ่านใหม่",
+    "confirmNew": "ยืนยันรหัสผ่านใหม่"
+  },
+  "errors": {
+    "passwordMismatch": "รหัสผ่านใหม่ไม่ตรงกัน",
+    "passwordTooShort": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+    "failedSignOut": "ออกจากระบบไม่สำเร็จ",
+    "failedPasswordChange": "เปลี่ยนรหัสผ่านไม่สำเร็จ",
+    "fullNameRequired": "ต้องระบุชื่อ-นามสกุล",
+    "failedProfileUpdate": "อัปเดตโปรไฟล์ไม่สำเร็จ",
+    "noUser": "ไม่พบผู้ใช้"
+  },
+  "success": {
+    "passwordChanged": "เปลี่ยนรหัสผ่านสำเร็จ",
+    "profileUpdated": "อัปเดตโปรไฟล์สำเร็จ"
+  },
+  "cashAccounts": "บัญชีเงินสด",
+  "investments": "การลงทุน",
+  "realEstate": "อสังหาริมทรัพย์",
+  "vehicles": "ยานพาหนะ",
+  "otherAssets": "สินทรัพย์อื่นๆ",
+  "creditCards": "บัตรเครดิต",
+  "loans": "สินเชื่อ",
+  "reportsAnalytics": "รายงานและการวิเคราะห์",
+  "page": {
+    "dashboard": "แดชบอร์ด",
+    "welcomeBack": "ยินดีต้อนรับกลับมา! นี่คือภาพรวมการเงินของคุณ",
+    "totalAssets": "สินทรัพย์รวม",
+    "totalLiabilities": "หนี้สินรวม",
+    "monthlyCashFlow": "กระแสเงินสดรายเดือน",
+    "loading": "กำลังโหลด..."
+  },
+  "widgets": {
+    "netWorth": "มูลค่าสุทธิ",
+    "netWorthTrend": "แนวโน้มมูลค่าสุทธิ",
+    "assetAllocation": "การจัดสรรสินทรัพย์",
+    "emergencyFund": "กองทุนฉุกเฉิน",
+    "progress": "ความคืบหน้า",
+    "goalAchieved": "บรรลุเป้าหมายแล้ว!",
+    "creditUtilization": "การใช้วงเงินเครดิต",
+    "excellent": "ดีเยี่ยม",
+    "good": "ดี",
+    "high": "สูง",
+    "used": "ใช้ไป",
+    "limit": "วงเงิน",
+    "upcomingBills": "บิลที่กำลังจะถึงกำหนด",
+    "noUpcomingBills": "ไม่มีบิลที่กำลังจะถึงกำหนด",
+    "today": "วันนี้",
+    "tomorrow": "พรุ่งนี้",
+    "paid": "จ่ายแล้ว",
+    "savingsGoals": "เป้าหมายการออม",
+    "noActiveGoals": "ไม่มีเป้าหมายที่ใช้งานอยู่",
+    "of": "จาก",
+    "target": "เป้าหมาย",
+    "value": "มูลค่า"
+  },
+  "quickActions": {
+    "addExpense": "เพิ่มรายจ่าย",
+    "addIncome": "เพิ่มรายรับ",
+    "addAccount": "เพิ่มบัญชี",
+    "addBill": "เพิ่มบิล",
+    "addGoal": "เพิ่มเป้าหมาย",
+    "addSavingsGoal": "เพิ่มเป้าหมายการออม",
+    "uploadCsv": "อัปโหลด CSV"
+  }
+}
