@@ -18,7 +18,10 @@ import { PlusCircle, Search, Filter, TrendingDown, Calendar, CreditCard, Pencil,
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LineChart, Line, CartesianGrid } from "recharts";
 import { toast } from "sonner";
 import { useToast } from "@/hooks/use-toast";
-import { upsertBillFromTransaction } from "@/services/bill-service";
+import {
+  deactivateRecurringTemplateByName,
+  upsertBillFromTransaction,
+} from "@/services/bill-service";
 import SEO from "@/components/SEO";
 import { getErrorMessage } from "@/utils/errors";
 import { toLocalDateInput } from "@/utils/date";
@@ -306,7 +309,8 @@ export default function Expenses() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.category || !formData.amount || !formData.merchant || !formData.paymentMethod) {
+    const normalizedMerchant = formData.merchant.trim();
+    if (!formData.category || !formData.amount || !normalizedMerchant || !formData.paymentMethod) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -327,7 +331,7 @@ export default function Expenses() {
         transaction_date: formData.date,
         category: formData.category,
         amount: parseFloat(formData.amount),
-        merchant: formData.merchant,
+        merchant: normalizedMerchant,
         payment_method: formData.paymentMethod,
         account_id: formData.account || null,
         account_name: accountName,
@@ -353,16 +357,20 @@ export default function Expenses() {
 
       // Handle Recurring Automation linkage
       if (formData.isRecurring) {
+        const previousMerchant = editingTransaction?.merchant || null;
         await upsertBillFromTransaction(
           transactionData,
           formData.recurrencePeriod,
           'expense',
           user.id,
+          previousMerchant,
         );
         showToast({
           title: "Automation Created",
           description: `This recurring expense will now be automatically recorded ${formData.recurrencePeriod}.`,
         });
+      } else if (editingTransaction?.is_recurring) {
+        await deactivateRecurringTemplateByName(user.id, "expense", editingTransaction.merchant || transactionData.merchant);
       }
 
       await fetchTransactions();

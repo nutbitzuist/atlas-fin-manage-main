@@ -18,7 +18,10 @@ import { PlusCircle, Search, Filter, TrendingUp, Calendar, DollarSign, Pencil, T
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { toast } from "sonner";
 import { useToast } from "@/hooks/use-toast";
-import { upsertBillFromTransaction } from "@/services/bill-service";
+import {
+  deactivateRecurringTemplateByName,
+  upsertBillFromTransaction,
+} from "@/services/bill-service";
 import SEO from "@/components/SEO";
 import { getErrorMessage } from "@/utils/errors";
 import { toLocalDateInput } from "@/utils/date";
@@ -255,7 +258,13 @@ export default function Income() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.category || !formData.amount || !formData.source || !formData.account) {
+    const normalizedSource = formData.source.trim();
+    if (
+      !formData.category ||
+      !formData.amount ||
+      !normalizedSource ||
+      !formData.account
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -276,7 +285,7 @@ export default function Income() {
         transaction_date: formData.date,
         category: formData.category,
         amount: parseFloat(formData.amount),
-        source: formData.source,
+        source: normalizedSource,
         account_id: formData.account || null,
         account_name: accountName,
         description: formData.description || null,
@@ -301,16 +310,20 @@ export default function Income() {
 
       // Handle Recurring Automation linkage
       if (formData.isRecurring) {
+        const previousSource = editingTransaction?.source || null;
         await upsertBillFromTransaction(
           transactionData,
           formData.recurrencePeriod,
           'income',
           user.id,
+          previousSource,
         );
         showToast({
           title: "Automation Created",
           description: `This recurring income will now be automatically recorded ${formData.recurrencePeriod}.`,
         });
+      } else if (editingTransaction?.is_recurring) {
+        await deactivateRecurringTemplateByName(user.id, "income", editingTransaction.source || transactionData.source);
       }
 
       await fetchTransactions();

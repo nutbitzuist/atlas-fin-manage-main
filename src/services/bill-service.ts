@@ -17,6 +17,7 @@ import {
   getBillByTemplateForUserRaw,
   getCashAccountLabelByIdRaw,
   getExistingPaymentTransactionRaw,
+  deactivateRecurringBillsByNameRaw,
   getRecurringBillTemplateRaw,
   markBillPaidRaw,
   updateBillByIdRaw,
@@ -76,6 +77,15 @@ export async function deleteBill(id: string, userId: string) {
     entity_type: "bills",
     entity_id: id,
   });
+}
+
+export async function deactivateRecurringTemplateByName(
+  userId: string,
+  type: "expense" | "income",
+  name: string,
+) {
+  const normalizedName = normalizeTemplateName(name);
+  await deactivateRecurringBillsByNameRaw(userId, normalizedName, type);
 }
 
 export type TransactionLikeForBillTemplate = {
@@ -164,11 +174,11 @@ export const payBill = async (
       sourceName,
     );
 
-  let transactionId;
+    let transactionId;
 
-  if (existingTrans) {
+    if (existingTrans) {
       transactionId = existingTrans.id;
-  } else {
+    } else {
       const transaction = await createTransaction({
         user_id: userId,
         type: bill.type || "expense",
@@ -243,11 +253,17 @@ export const upsertBillFromTransaction = async (
   recurrencePeriod: string = "monthly",
   type: "expense" | "income" = "expense",
   userId: string,
+  previousName?: string | null,
 ) => {
   try {
     const billName = normalizeTemplateName(transactionData.merchant || transactionData.source);
     const transactionDate = normalizeDateInput(transactionData.transaction_date);
     if (!transactionDate) throw new Error("Transaction date is required");
+
+    const previousBillName = previousName ? normalizeTemplateName(previousName) : "";
+    if (previousBillName && previousBillName !== billName) {
+      await deactivateRecurringBillsByNameRaw(userId, previousBillName, type);
+    }
 
     const existingBill = await getRecurringBillTemplateRaw(userId, billName, type);
 

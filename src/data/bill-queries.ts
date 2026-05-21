@@ -224,6 +224,28 @@ export async function getRecurringBillTemplateRaw(
   return data as BillTemplateNameLookupRow | null;
 }
 
+export async function deactivateRecurringBillsByNameRaw(
+  userId: string,
+  name: string,
+  type: "income" | "expense",
+) {
+  const normalizedName = name.trim();
+  const { error } = await supabase
+    .from("bills")
+    .update({
+      is_recurring: false,
+      auto_pay: false,
+      is_paid: true,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", userId)
+    .ilike("name", normalizedName)
+    .eq("type", type)
+    .eq("is_recurring", true);
+
+  if (error) throw error;
+}
+
 export async function cloneNextRecurringBillRaw(templateBill: BillRow) {
   const { data: nextBill, error } = await supabase
     .from("bills")
