@@ -14,6 +14,7 @@ import { getProfileDisplayName } from "@/services/profile-service";
 import { getTransactionsByUserId } from "@/services/transaction-service";
 import { getAssetSummary } from "@/services/financial-overview-service";
 import { getNetWorthHistoryByUser } from "@/services/net-worth-history-service";
+import { toLocalDateInput } from "@/utils/date";
 
 type ReportPeriod = "this_month" | "last_month" | "this_quarter" | "this_year" | "last_year" | "custom";
 
@@ -129,8 +130,8 @@ const Reports = () => {
       const transactions = await getTransactionsByUserId(
         userId,
         {
-          startDate: startDate.toISOString().split("T")[0],
-          endDate: endDate.toISOString().split("T")[0],
+          startDate: toLocalDateInput(startDate),
+          endDate: toLocalDateInput(endDate),
           orderBy: "transaction_date",
           ascending: false,
         },
@@ -181,8 +182,8 @@ const Reports = () => {
 
       // Fetch net worth history
       const netWorthHistory = await getNetWorthHistoryByUser(userId, {
-        startDate: startDate.toISOString().split("T")[0],
-        endDate: endDate.toISOString().split("T")[0],
+        startDate: toLocalDateInput(startDate),
+        endDate: toLocalDateInput(endDate),
         orderBy: "date",
         ascending: true,
       });
@@ -216,7 +217,7 @@ const Reports = () => {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `${filename}_${toLocalDateInput(new Date())}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();

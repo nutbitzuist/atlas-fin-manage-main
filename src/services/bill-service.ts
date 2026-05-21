@@ -1,5 +1,6 @@
 import { logAuditEvent } from "@/services/audit-service";
 import { createTransaction, type TransactionRow } from "@/services/transaction-service";
+import { toLocalDateInput } from "@/utils/date";
 
 import type {
   BillInsert,
@@ -21,6 +22,14 @@ import {
   updateBillByIdRaw,
   updateBillRaw,
 } from "@/data/bill-queries";
+
+const normalizeDateInput = (date: string | Date | null | undefined): string => {
+  if (!date) return "";
+  if (date instanceof Date) return toLocalDateInput(date);
+  return date.includes("T") ? date.slice(0, 10) : date;
+};
+
+const normalizeTemplateName = (name?: string | null) => (name || "Unknown Bill").trim();
 
 export type ProcessBillResult = {
   success: boolean;
@@ -83,13 +92,17 @@ export type TransactionLikeForBillTemplate = {
 const getNextDueDate = (dueDate: string, recurrencePeriod: string) => {
   const currentDueDate = new Date(dueDate);
   const nextDueDate = new Date(currentDueDate);
+  const normalizedPeriod = recurrencePeriod.trim().toLowerCase();
 
-  switch (recurrencePeriod.toLowerCase()) {
+  switch (normalizedPeriod) {
     case "weekly":
       nextDueDate.setDate(currentDueDate.getDate() + 7);
       break;
     case "monthly":
       nextDueDate.setMonth(currentDueDate.getMonth() + 1);
+      break;
+    case "quarterly":
+      nextDueDate.setMonth(currentDueDate.getMonth() + 3);
       break;
     case "yearly":
       nextDueDate.setFullYear(currentDueDate.getFullYear() + 1);
@@ -106,6 +119,7 @@ const buildRecurringTemplatePayload = (bill: BillRow): BillInsert => {
   return {
     ...rest,
     user_id,
+    due_date: normalizeDateInput(rest.due_date),
   } as BillInsert;
 };
 
@@ -145,7 +159,7 @@ export const payBill = async (
       userId,
       bill.type || "expense",
       bill.amount,
-      bill.due_date,
+      normalizeDateInput(bill.due_date),
       merchantName,
       sourceName,
     );
@@ -160,7 +174,7 @@ export const payBill = async (
         type: bill.type || "expense",
         amount: bill.amount,
         category: bill.category || (bill.type === "income" ? "Salary" : "Bills"),
-        transaction_date: bill.due_date,
+        transaction_date: normalizeDateInput(bill.due_date),
         merchant: merchantName,
         source: sourceName,
         description: `Recurring ${bill.type || "expense"}: ${bill.name}. ${bill.description || ""}`,
@@ -180,7 +194,7 @@ export const payBill = async (
       const nextDueDate = getNextDueDate(bill.due_date, bill.recurrence_period);
       const nextBillPayload = buildRecurringTemplatePayload({
         ...bill,
-        due_date: nextDueDate.toISOString(),
+        due_date: normalizeDateInput(nextDueDate),
         auto_pay: bill.auto_pay,
         account_id: bill.account_id,
         type: bill.type || "expense",
@@ -231,7 +245,9 @@ export const upsertBillFromTransaction = async (
   userId: string,
 ) => {
   try {
-    const billName = transactionData.merchant || transactionData.source || "Unknown Bill";
+    const billName = normalizeTemplateName(transactionData.merchant || transactionData.source);
+    const transactionDate = normalizeDateInput(transactionData.transaction_date);
+    if (!transactionDate) throw new Error("Transaction date is required");
 
     const existingBill = await getRecurringBillTemplateRaw(userId, billName, type);
 
@@ -240,7 +256,7 @@ export const upsertBillFromTransaction = async (
       name: billName,
       amount: transactionData.amount,
       currency: transactionData.currency || "THB",
-      due_date: transactionData.transaction_date,
+      due_date: transactionDate,
       category: transactionData.category,
       is_recurring: true,
       recurrence_period: recurrencePeriod,

@@ -13,6 +13,7 @@ import { getProfileById, getProfileDisplayName } from "@/services/profile-servic
 import { getTransactionsByUserId } from "@/services/transaction-service";
 import { getAssetSummary, getLiabilitySummary } from "@/services/financial-overview-service";
 import { getIncomeByUserId } from "@/services/income-service";
+import { toLocalDateInput } from "@/utils/date";
 import {
   createHealthHistoryEntry,
   getHealthHistoryByUser,
@@ -276,8 +277,8 @@ export default function FinancialHealth() {
   };
 
   const saveAndFetchScoreHistory = async (userId: string, currentScore: number, currentMetrics: HealthMetric[]) => {
-      try {
-      const today = new Date().toISOString().split('T')[0];
+    try {
+      const today = toLocalDateInput(new Date());
 
       const existing = await getHealthHistoryByUserAndDate(userId, today);
 

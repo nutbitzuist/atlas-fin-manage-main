@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { createNotification, getNotificationsByDedupeKeys } from "@/services/notification-service";
 import { buildCashFlowForecast, formatTHB } from "@/utils/planning";
+import { toLocalDateInput } from "@/utils/date";
 import { getCashAccountBalancesByUser } from "@/services/cash-account-service";
 import { getBudgetsByUserAndMonth } from "@/services/budget-service";
 import { getIncomeByUserId } from "@/services/income-service";
@@ -21,8 +22,6 @@ type NotificationInput = {
   dedupeKey: string;
   metadata?: Record<string, unknown>;
 };
-
-const toDateInput = (date: Date) => date.toISOString().split("T")[0];
 
 const getDedupeKey = (metadata: Json | null): string | null => {
   if (metadata && typeof metadata === "object" && !Array.isArray(metadata)) {
@@ -45,10 +44,10 @@ export const useSmartNotifications = () => {
         if (!user) return;
 
         const now = new Date();
-        const today = toDateInput(now);
-        const monthStart = toDateInput(startOfMonth(now));
-        const monthEnd = toDateInput(new Date(now.getFullYear(), now.getMonth() + 1, 0));
-        const nextSevenDays = toDateInput(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7));
+        const today = toLocalDateInput(now);
+        const monthStart = toLocalDateInput(startOfMonth(now));
+        const monthEnd = toLocalDateInput(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+        const nextSevenDays = toLocalDateInput(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7));
 
         const [
           cashResult,

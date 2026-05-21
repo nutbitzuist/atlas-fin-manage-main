@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { upsertBillFromTransaction } from "@/services/bill-service";
 import SEO from "@/components/SEO";
 import { getErrorMessage } from "@/utils/errors";
+import { toLocalDateInput } from "@/utils/date";
 import {
   createTransaction,
   deleteTransaction,
@@ -96,7 +97,7 @@ export default function Expenses() {
 
   // Form state
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: toLocalDateInput(new Date()),
     category: "",
     amount: "",
     merchant: "",
@@ -368,7 +369,7 @@ export default function Expenses() {
 
       // Reset form
       setFormData({
-        date: new Date().toISOString().split('T')[0],
+        date: toLocalDateInput(new Date()),
         category: "",
         amount: "",
         merchant: "",
@@ -722,7 +723,7 @@ export default function Expenses() {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        date: new Date().toISOString().split('T')[0],
+                        date: toLocalDateInput(new Date()),
                         category: cat,
                         amount: "",
                         merchant: "",

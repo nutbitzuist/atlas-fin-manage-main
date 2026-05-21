@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { format, differenceInMonths, differenceInDays, parseISO } from "date-fns";
 import { getErrorMessage } from "@/utils/errors";
+import { toLocalDateInput } from "@/utils/date";
 import { getProfileById, updateProfile } from "@/services/profile-service";
 import { getTransactionsByUserId } from "@/services/transaction-service";
 import {
@@ -82,8 +83,8 @@ const SavingsGoals = () => {
 
       // 2. Fetch this month's savings contributions
       const now = new Date();
-      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+      const firstDay = toLocalDateInput(new Date(now.getFullYear(), now.getMonth(), 1));
+      const lastDay = toLocalDateInput(new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
       const txData = await getTransactionsByUserId(
         userId,

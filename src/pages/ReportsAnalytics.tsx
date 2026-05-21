@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Session } from "@supabase/supabase-js";
 import type { jsPDF as JsPDFDocument } from "jspdf";
 import { getProfileDisplayName } from "@/services/profile-service";
+import { toLocalDateInput } from "@/utils/date";
 import { getTransactionsByUserId } from "@/services/transaction-service";
 
 const CHART_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
@@ -330,7 +331,7 @@ export default function ReportsAnalytics() {
       }
 
       // Save the PDF
-      doc.save(`financial_report_${new Date().toISOString().split('T')[0]}.pdf`);
+      doc.save(`financial_report_${toLocalDateInput(new Date())}.pdf`);
 
       toast.success("PDF report downloaded successfully!");
     } catch (error) {
@@ -376,7 +377,7 @@ export default function ReportsAnalytics() {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `financial_report_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `financial_report_${toLocalDateInput(new Date())}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();

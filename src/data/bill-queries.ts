@@ -75,11 +75,12 @@ export async function getBillByTemplateForUserRaw(
   name: string,
   type: "income" | "expense",
 ) {
+  const normalizedName = name.trim();
   const { data, error } = await supabase
     .from("bills")
     .select("id")
     .eq("user_id", userId)
-    .eq("name", name)
+    .ilike("name", normalizedName)
     .eq("type", type)
     .eq("is_recurring", true)
     .eq("is_paid", false)
@@ -176,16 +177,20 @@ export async function getExistingPaymentTransactionRaw(
   merchantName: string | null,
   sourceName: string | null,
 ) {
+  const normalizedDueDate = dueDate.includes("T") ? dueDate.slice(0, 10) : dueDate;
+
   const transactionQuery = supabase
     .from("transactions")
     .select("id")
     .eq("user_id", userId)
     .eq("type", type || "expense")
     .eq("amount", amount)
-    .eq("transaction_date", dueDate);
+    .eq("transaction_date", normalizedDueDate);
 
   if (merchantName) {
-    const { data } = await transactionQuery.eq("merchant", merchantName).maybeSingle();
+    const { data } = await transactionQuery
+      .eq("merchant", merchantName.trim())
+      .maybeSingle();
     return data as TransactionForBillDuplicateRow | null;
   }
 
@@ -193,7 +198,9 @@ export async function getExistingPaymentTransactionRaw(
     return null;
   }
 
-  const { data } = await transactionQuery.eq("source", sourceName || null).maybeSingle();
+  const { data } = await transactionQuery
+    .eq("source", sourceName.trim() || null)
+    .maybeSingle();
   return data as TransactionForBillDuplicateRow | null;
 }
 
@@ -202,11 +209,12 @@ export async function getRecurringBillTemplateRaw(
   name: string,
   type: "income" | "expense",
 ) {
+  const normalizedName = name.trim();
   const { data, error } = await supabase
     .from("bills")
     .select("id")
     .eq("user_id", userId)
-    .eq("name", name)
+    .ilike("name", normalizedName)
     .eq("type", type)
     .eq("is_recurring", true)
     .eq("is_paid", false)

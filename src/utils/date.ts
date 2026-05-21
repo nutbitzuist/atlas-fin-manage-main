@@ -1,0 +1,12 @@
+export const toLocalDateInput = (date: Date | string = new Date()) => {
+  const parsedDate = typeof date === "string" ? new Date(date) : date;
+  if (Number.isNaN(parsedDate.getTime())) {
+    return String(date).split("T")[0];
+  }
+
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+  const day = String(parsedDate.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};

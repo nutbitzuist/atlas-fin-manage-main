@@ -4,6 +4,7 @@ import { getBillByTemplateForUser, getBillsByUserId } from "@/services/bill-serv
 import { getTransactionsByUserId } from "@/services/transaction-service";
 import { useToast } from "@/hooks/use-toast";
 import { payBill, upsertBillFromTransaction } from "@/services/bill-service";
+import { toLocalDateInput } from "@/utils/date";
 
 /**
  * Hook to automatically process recurring bills that have passed their due date.
@@ -33,7 +34,7 @@ export const useRecurringAutomation = () => {
         const seenTemplates = new Set();
         
         for (const tx of recurringTransactions) {
-          const name = tx.merchant || tx.source;
+          const name = (tx.merchant || tx.source || "").trim().toLowerCase();
           if (!name) continue;
           const key = `${name}-${tx.type}`;
           
@@ -64,7 +65,7 @@ export const useRecurringAutomation = () => {
         hasProcessed = false;
         
         // Fetch pending auto-pay bills whose due date is in the past
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = toLocalDateInput(new Date());
         const bills = await getBillsByUserId(user.id, {
           autoPay: true,
           isPaid: false,

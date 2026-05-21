@@ -33,6 +33,7 @@ import {
 import { format, differenceInDays, addYears } from "date-fns";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { getErrorMessage } from "@/utils/errors";
+import { toLocalDateInput } from "@/utils/date";
 import { getProfileDisplayName } from "@/services/profile-service";
 import { createTransaction } from "@/services/transaction-service";
 import {
@@ -317,7 +318,7 @@ const Insurance = () => {
     };
 
     if (newStatus === 'paid') {
-      updateData.last_paid_date = new Date().toISOString().split('T')[0];
+      updateData.last_paid_date = toLocalDateInput(new Date());
       // Calculate next payment date based on frequency
       const now = new Date();
       if (policy.premium_frequency === 'monthly') {
@@ -327,7 +328,7 @@ const Insurance = () => {
       } else {
         now.setFullYear(now.getFullYear() + 1);
       }
-      updateData.next_payment_date = now.toISOString().split('T')[0];
+      updateData.next_payment_date = toLocalDateInput(now);
     }
 
     try {
@@ -342,7 +343,7 @@ const Insurance = () => {
             amount: policy.premium_amount,
             type: "expense",
             category: "Insurance",
-            transaction_date: updateData.last_paid_date || new Date().toISOString().split("T")[0],
+            transaction_date: updateData.last_paid_date || toLocalDateInput(new Date()),
             description: `Insurance Premium Paid: ${policy.provider} (${policy.policy_number || "N/A"})`,
             currency: "THB",
             account_id: null,

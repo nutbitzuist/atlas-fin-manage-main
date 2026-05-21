@@ -13,6 +13,7 @@ import { getErrorMessage } from "@/utils/errors";
 import { getProfileDisplayName } from "@/services/profile-service";
 import { getAssetSummary, getLiabilitySummary } from "@/services/financial-overview-service";
 import { getNetWorthHistoryByUser, upsertNetWorthSnapshot } from "@/services/net-worth-history-service";
+import { toLocalDateInput } from "@/utils/date";
 
 const ASSET_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 const LIABILITY_COLORS = ['#ef4444', '#f97316', '#f43f5e'];
@@ -112,8 +113,7 @@ export default function NetWorth() {
   const fetchNetWorthHistory = async (userId: string, currentAssets: number, currentLiabilities: number) => {
     try {
       // Auto-Snapshot Logic
-      const today = new Date();
-      const todayStr = today.toISOString().split('T')[0];
+      const todayStr = toLocalDateInput(new Date());
       await upsertNetWorthSnapshot(userId, {
         date: todayStr,
         totalAssets: currentAssets,
@@ -169,7 +169,7 @@ export default function NetWorth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = toLocalDateInput(new Date());
       const [assetsTotal, liabilitiesTotal] = await Promise.all([
         getAssetSummary(session.user.id, "active").then((summary) => summary.totalAssets),
         getLiabilitySummary(session.user.id, "active").then((summary) => summary.totalLiabilities),

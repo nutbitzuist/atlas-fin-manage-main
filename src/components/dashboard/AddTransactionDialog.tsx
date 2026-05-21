@@ -22,6 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { getErrorMessage } from "@/utils/errors";
 import { createTransaction } from "@/services/transaction-service";
+import { toLocalDateInput } from "@/utils/date";
 
 interface AddTransactionDialogProps {
   open: boolean;
@@ -64,7 +65,7 @@ export const AddTransactionDialog = ({
     category: "",
     amount: "",
     description: "",
-    transaction_date: new Date().toISOString().split('T')[0],
+    transaction_date: toLocalDateInput(new Date()),
   });
 
   const categories = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
@@ -96,7 +97,7 @@ export const AddTransactionDialog = ({
         category: "",
         amount: "",
         description: "",
-        transaction_date: new Date().toISOString().split('T')[0],
+        transaction_date: toLocalDateInput(new Date()),
       });
 
       onOpenChange(false);
