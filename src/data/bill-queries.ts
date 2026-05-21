@@ -75,18 +75,7 @@ export async function getBillByTemplateForUserRaw(
   name: string,
   type: "income" | "expense",
 ) {
-  const normalizedName = name.trim();
-  const { data, error } = await supabase
-    .from("bills")
-    .select("id")
-    .eq("user_id", userId)
-    .ilike("name", normalizedName)
-    .eq("type", type)
-    .eq("is_recurring", true)
-    .eq("is_paid", false)
-    .maybeSingle();
-
-  if (error) throw error;
+  const [data] = await getRecurringBillTemplatesForUserRaw(userId, name, type);
   return data as BillTemplateNameLookupRow | null;
 }
 
@@ -188,8 +177,13 @@ export async function getExistingPaymentTransactionRaw(
     .eq("transaction_date", normalizedDueDate);
 
   if (merchantName) {
+    const normalizedMerchant = merchantName.trim();
+    if (!normalizedMerchant) {
+      return null;
+    }
+
     const { data } = await transactionQuery
-      .eq("merchant", merchantName.trim())
+      .ilike("merchant", normalizedMerchant)
       .maybeSingle();
     return data as TransactionForBillDuplicateRow | null;
   }
@@ -198,13 +192,18 @@ export async function getExistingPaymentTransactionRaw(
     return null;
   }
 
+  const normalizedSource = sourceName.trim();
+  if (!normalizedSource) {
+    return null;
+  }
+
   const { data } = await transactionQuery
-    .eq("source", sourceName.trim() || null)
+    .ilike("source", normalizedSource)
     .maybeSingle();
   return data as TransactionForBillDuplicateRow | null;
 }
 
-export async function getRecurringBillTemplateRaw(
+export async function getRecurringBillTemplatesForUserRaw(
   userId: string,
   name: string,
   type: "income" | "expense",
@@ -212,15 +211,24 @@ export async function getRecurringBillTemplateRaw(
   const normalizedName = name.trim();
   const { data, error } = await supabase
     .from("bills")
-    .select("id")
+    .select("*")
     .eq("user_id", userId)
     .ilike("name", normalizedName)
     .eq("type", type)
     .eq("is_recurring", true)
     .eq("is_paid", false)
-    .maybeSingle();
+    .order("updated_at", { ascending: false });
 
   if (error) throw error;
+  return (data as BillRow[]) || [];
+}
+
+export async function getRecurringBillTemplateRaw(
+  userId: string,
+  name: string,
+  type: "income" | "expense",
+) {
+  const [data] = await getRecurringBillTemplatesForUserRaw(userId, name, type);
   return data as BillTemplateNameLookupRow | null;
 }
 
@@ -242,6 +250,31 @@ export async function deactivateRecurringBillsByNameRaw(
     .ilike("name", normalizedName)
     .eq("type", type)
     .eq("is_recurring", true);
+
+  if (error) throw error;
+}
+
+export async function deactivateRecurringBillsByNameExceptRaw(
+  userId: string,
+  name: string,
+  type: "income" | "expense",
+  keepBillId: string,
+) {
+  const normalizedName = name.trim();
+  const { error } = await supabase
+    .from("bills")
+    .update({
+      is_recurring: false,
+      auto_pay: false,
+      is_paid: true,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", userId)
+    .ilike("name", normalizedName)
+    .eq("type", type)
+    .eq("is_recurring", true)
+    .eq("is_paid", false)
+    .neq("id", keepBillId);
 
   if (error) throw error;
 }

@@ -17,8 +17,9 @@ import {
   getBillByTemplateForUserRaw,
   getCashAccountLabelByIdRaw,
   getExistingPaymentTransactionRaw,
+  getRecurringBillTemplatesForUserRaw,
   deactivateRecurringBillsByNameRaw,
-  getRecurringBillTemplateRaw,
+  deactivateRecurringBillsByNameExceptRaw,
   markBillPaidRaw,
   updateBillByIdRaw,
   updateBillRaw,
@@ -54,6 +55,43 @@ export async function getBillByTemplateForUser(
   type: "income" | "expense",
 ) {
   return getBillByTemplateForUserRaw(userId, name, type);
+}
+
+export async function dedupeActiveRecurringTemplates(userId: string) {
+  const recurringBills = await getBillsByUserIdRaw(userId, {
+    isRecurring: true,
+    isPaid: false,
+    orderBy: "updated_at",
+    ascending: false,
+  });
+
+  if (!recurringBills || recurringBills.length < 2) {
+    return;
+  }
+
+  const grouped = new Map<string, BillRow[]>();
+  for (const bill of recurringBills) {
+    const normalizedName = normalizeTemplateName(bill.name).toLowerCase();
+    const billType = bill.type || "expense";
+    const key = `${normalizedName}|${billType}`;
+    const existing = grouped.get(key) || [];
+    existing.push(bill);
+    grouped.set(key, existing);
+  }
+
+  const entries = Array.from(grouped.values()).filter((group) => group.length > 1);
+  for (const templates of entries) {
+    const canonicalTemplate = templates[0];
+    const normalizedName = canonicalTemplate.name ? normalizeTemplateName(canonicalTemplate.name) : "Unknown Bill";
+    const canonicalType = (canonicalTemplate.type || "expense") as "income" | "expense";
+
+    await deactivateRecurringBillsByNameExceptRaw(
+      userId,
+      normalizedName,
+      canonicalType,
+      canonicalTemplate.id,
+    );
+  }
 }
 
 export async function getBillById(id: string) {
@@ -265,7 +303,12 @@ export const upsertBillFromTransaction = async (
       await deactivateRecurringBillsByNameRaw(userId, previousBillName, type);
     }
 
-    const existingBill = await getRecurringBillTemplateRaw(userId, billName, type);
+    const existingBills = await getRecurringBillTemplatesForUserRaw(userId, billName, type);
+    const canonicalBill = existingBills[0] || null;
+
+    if (existingBills.length > 1 && canonicalBill) {
+      await deactivateRecurringBillsByNameExceptRaw(userId, billName, type, canonicalBill.id);
+    }
 
     const billData = {
       user_id: userId,
@@ -283,9 +326,9 @@ export const upsertBillFromTransaction = async (
       type,
     };
 
-    if (existingBill) {
-      await updateBillByIdRaw(existingBill.id, billData as BillUpdate);
-      return { success: true, billId: existingBill.id };
+    if (canonicalBill) {
+      await updateBillByIdRaw(canonicalBill.id, billData as BillUpdate);
+      return { success: true, billId: canonicalBill.id };
     }
 
     const created = await createBillRaw(billData as BillInsert);

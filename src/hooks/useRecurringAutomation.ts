@@ -1,6 +1,10 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getBillByTemplateForUser, getBillsByUserId } from "@/services/bill-service";
+import {
+  dedupeActiveRecurringTemplates,
+  getBillByTemplateForUser,
+  getBillsByUserId,
+} from "@/services/bill-service";
 import { getTransactionsByUserId } from "@/services/transaction-service";
 import { useToast } from "@/hooks/use-toast";
 import { payBill, upsertBillFromTransaction } from "@/services/bill-service";
@@ -23,6 +27,8 @@ export const useRecurringAutomation = () => {
       if (!user) return;
 
       // 1. One-time Migration: Find existing recurring transactions that aren't in Bills yet
+      await dedupeActiveRecurringTemplates(user.id);
+
       const recurringTransactions = await getTransactionsByUserId(user.id, {
         isRecurring: true,
         orderBy: "transaction_date",
